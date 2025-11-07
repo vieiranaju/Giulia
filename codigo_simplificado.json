@@ -1,0 +1,40 @@
+[
+  {
+    "type": "Function",
+    "name": "main",
+    "returnType": "int",
+    "body": [
+      {
+        "type": "Declaration",
+        "varType": "int",
+        "name": "a",
+        "value": 5
+      },
+      {
+        "type": "Declaration",
+        "varType": "int",
+        "name": "b",
+        "value": {
+          "type": "BinaryOp",
+          "op": "*",
+          "left": 3,
+          "right": {
+            "type": "BinaryOp",
+            "op": "+",
+            "left": "a",
+            "right": 10
+          }
+        }
+      },
+      {
+        "type": "Return",
+        "value": {
+          "type": "BinaryOp",
+          "op": "-",
+          "left": "b",
+          "right": 1
+        }
+      }
+    ]
+  }
+]
