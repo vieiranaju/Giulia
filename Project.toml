@@ -1,0 +1,10 @@
+name = "Giulia"
+uuid = "5d4b6c10-4f69-4e4d-b3d2-7f2d0d5b8e9a"
+version = "0.1.0"
+
+[deps]
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+
+[compat]
+JSON = "1.2.1"
+julia = "1.11"

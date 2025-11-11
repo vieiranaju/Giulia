@@ -1,0 +1,12 @@
+int main(void) {
+    int x = 3;
+    int resultado = 0;
+    
+    if (x > 5) {
+        resultado = 100;
+    } else {
+        resultado = 50;
+    }
+    
+    return resultado;
+}

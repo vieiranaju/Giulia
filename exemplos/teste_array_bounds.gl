@@ -1,0 +1,9 @@
+int main(void) {
+    int numeros[4];
+    numeros[0] = 1;
+    numeros[1] = 2;
+    numeros[2] = 3;
+    
+    int acesso = numeros[5];
+    return acesso;
+}

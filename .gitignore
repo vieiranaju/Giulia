@@ -1,0 +1,16 @@
+# Julia local installation
+.julia-dist/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Julia
+Manifest.toml
+
+# Generated files
+codigo_simplificado.json
+
+# Backup files
+*.backup

@@ -1,0 +1,15 @@
+int main(void) {
+    int valores[3];
+    valores[0] = 5;
+    valores[1] = 10;
+    valores[2] = 15;
+    
+    int i = 0;
+    int resultado = 0;
+    while (i < 3) {
+        resultado = resultado + valores[i];
+        i = i + 1;
+    }
+    
+    return resultado;
+}

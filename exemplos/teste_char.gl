@@ -1,0 +1,11 @@
+int main(void) {
+    char c = 'A';
+    char d = 'B';
+    int resultado = 0;
+    
+    if (c == 'A') {
+        resultado = 1;
+    }
+    
+    return resultado;
+}
