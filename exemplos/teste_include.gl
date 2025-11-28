@@ -1,0 +1,6 @@
+#include "inc.gl"
+int main() {
+  int r = soma(2, 3);
+  printf(r);
+  return 0;
+}

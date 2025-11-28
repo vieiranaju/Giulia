@@ -14,10 +14,11 @@ from MiniCVisitor import MiniCVisitor
 
 class AstVisitor(MiniCVisitor):
 
-    def __init__(self):
+    def __init__(self, base_dir=None):
         self.defines = {}
         self.struct_defs = {}
         self.union_defs = {}
+        self.base_dir = base_dir or ''
 
     def visitCompilationUnit(self, ctx:MiniCParser.CompilationUnitContext):
         resultados = []
@@ -31,6 +32,8 @@ class AstVisitor(MiniCVisitor):
                 text = child.getText().strip()
                 if text.startswith("#define"):
                     self.processarDefine(text)
+                elif text.startswith("#include"):
+                    self.processarInclude(text, resultados)
         return resultados
 
     def processarDefine(self, text):
@@ -44,7 +47,32 @@ class AstVisitor(MiniCVisitor):
             except:
                 value = value_str
             self.defines[name] = value
-            print(f"🔹 Pré-processador: Definido {name} = {value}")
+            print(f"Pré-processador: definido {name} = {value}")
+
+    def processarInclude(self, text, resultados):
+        match = re.match(r'#\s*include\s+"([^"]+)"', text)
+        if not match:
+            print("Aviso: include não reconhecido (use \"arquivo\")")
+            return
+        inc_name = match.group(1)
+        inc_path = os.path.join(self.base_dir or '', inc_name)
+        if not os.path.isfile(inc_path):
+            print(f"Aviso: include não encontrado: {inc_path}")
+            return
+        # Parseia e mescla
+        input_stream = FileStream(inc_path, encoding='utf-8')
+        lexer = MiniCLexer(input_stream)
+        stream = CommonTokenStream(lexer)
+        parser = MiniCParser(stream)
+        tree = parser.compilationUnit()
+        sub_visitor = AstVisitor(base_dir=os.path.dirname(inc_path))
+        sub_visitor.defines.update(self.defines)
+        sub_ast = sub_visitor.visit(tree)
+        # Mescla defines/structs/unions e AST
+        self.defines.update(sub_visitor.defines)
+        self.struct_defs.update(sub_visitor.struct_defs)
+        self.union_defs.update(sub_visitor.union_defs)
+        resultados.extend(sub_ast)
 
     # Função: coleta nome, retorno e params
     def visitFunctionDefinition(self, ctx:MiniCParser.FunctionDefinitionContext):
@@ -469,11 +497,11 @@ def main(argv):
     stream = CommonTokenStream(lexer)
     parser = MiniCParser(stream)
     tree = parser.compilationUnit()
-    visitor = AstVisitor()
+    visitor = AstVisitor(base_dir=os.path.dirname(input_path))
     ast_simplificada = visitor.visit(tree)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(ast_simplificada, f, indent=2)
-    print(f"✅ AST simplificada gerada em {output_path}")
+    print(f"AST simplificada gerada em {output_path}")
 
 if __name__ == '__main__':
     main(sys.argv)

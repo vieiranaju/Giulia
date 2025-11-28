@@ -49,14 +49,21 @@ function avaliar_expressao(expr_json, env)
             left = avaliar_expressao(expr_json["left"], env)
             right = avaliar_expressao(expr_json["right"], env)
 
+            # Checagem numérica para operações aritméticas
+            if op in ["+", "-", "*", "/", "%"]
+                if !(left isa Number) || !(right isa Number)
+                    error("Operação aritmética requer números: '$op' com tipos $(typeof(left)) e $(typeof(right))")
+                end
+            end
+
             if op == "+" return left + right
             elseif op == "-" return left - right
             elseif op == "*" return left * right
-            elseif op == "/" return div(left, right) # Divisão inteira
-            elseif op == "%" return left % right     # Módulo
+            elseif op == "/" return div(left, right)
+            elseif op == "%" return left % right
             elseif op == ">" return left > right
-            elseif op == "<" return left < right
             elseif op == ">=" return left >= right
+            elseif op == "<" return left < right
             elseif op == "<=" return left <= right
             elseif op == "==" return left == right
             elseif op == "!=" return left != right
@@ -144,6 +151,10 @@ function avaliar_expressao(expr_json, env)
             field = expr_json["field"]
             obj_val = isa(obj_node, String) ? env[obj_node] : avaliar_expressao(obj_node, env)
             if obj_val isa Dict{String,Any}
+                # Verificação semântica de union
+                if haskey(obj_val, "_active") && field != obj_val["_active"]
+                    error("Leitura de campo inativo em union: ativo='$(obj_val["_active"])', lido='$field'")
+                end
                 if !haskey(obj_val, field)
                     error("Campo '$field' inexistente")
                 end
@@ -247,7 +258,25 @@ function executar_statement(stmt, env)
                 obj_val[field] = valor
             end
         else
-            env[target] = valor
+            # Checagem simples: se já existir e for int/float, manter coerção
+            if haskey(env, target)
+                existente = env[target]
+                if existente isa Int
+                    if !(valor isa Number)
+                        error("Atribuição inválida: variável int recebendo tipo $(typeof(valor))")
+                    end
+                    env[target] = Int(floor(valor))
+                elseif existente isa Float64
+                    if !(valor isa Number)
+                        error("Atribuição inválida: variável float recebendo tipo $(typeof(valor))")
+                    end
+                    env[target] = Float64(valor)
+                else
+                    env[target] = valor
+                end
+            else
+                env[target] = valor
+            end
         end
 
     elseif stmt_type == "Call"

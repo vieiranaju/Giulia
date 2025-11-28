@@ -1,6 +1,26 @@
 [
   {
     "type": "Function",
+    "name": "soma",
+    "returnType": "int",
+    "params": [
+      "x",
+      "y"
+    ],
+    "body": [
+      {
+        "type": "Return",
+        "value": {
+          "type": "BinaryOp",
+          "op": "+",
+          "left": "x",
+          "right": "y"
+        }
+      }
+    ]
+  },
+  {
+    "type": "Function",
     "name": "main",
     "returnType": "int",
     "params": [],
@@ -8,32 +28,13 @@
       {
         "type": "Declaration",
         "varType": "int",
-        "name": "a",
+        "name": "r",
         "value": {
           "type": "Call",
-          "callee": "atoi",
+          "callee": "soma",
           "args": [
-            {
-              "type": "String",
-              "value": "123"
-            }
-          ]
-        },
-        "isArray": false,
-        "size": null
-      },
-      {
-        "type": "Declaration",
-        "varType": "float",
-        "name": "b",
-        "value": {
-          "type": "Call",
-          "callee": "atof",
-          "args": [
-            {
-              "type": "String",
-              "value": "3.14"
-            }
+            2,
+            3
           ]
         },
         "isArray": false,
@@ -43,14 +44,7 @@
         "type": "Call",
         "callee": "printf",
         "args": [
-          "a"
-        ]
-      },
-      {
-        "type": "Call",
-        "callee": "printf",
-        "args": [
-          "b"
+          "r"
         ]
       },
       {

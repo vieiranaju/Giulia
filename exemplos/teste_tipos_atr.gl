@@ -1,0 +1,8 @@
+int main() {
+  int a = 10;
+  float b = 2.5;
+  // inválidos
+  a = "texto";        // deve erro: int recebendo String
+  b = "3.1";          // deve erro: float recebendo String
+  return 0;
+}

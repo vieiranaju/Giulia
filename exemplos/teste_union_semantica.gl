@@ -1,0 +1,8 @@
+union U { int i; float f; };
+
+int main() {
+  union U u = { .f = 42.0 };
+  // leitura de campo inativo deve falhar
+  printf(u.i);
+  return 0;
+}
